@@ -27,6 +27,7 @@ jobs:
     # -------------------------
     - name: Dependency Check
       uses: dependency-check/Dependency-Check_Action@main
+      if: always()
       with:
         project: "PAI4"
         path: "."
@@ -34,6 +35,7 @@ jobs:
         out: "dependency-check-report"
 
     - name: Upload Dependency report to DefectDojo
+      if: always()
       env:
         DD_URL: ${{ secrets.DD_URL }}
         DD_API_KEY: ${{ secrets.DD_API_KEY }}
@@ -50,10 +52,10 @@ jobs:
     # -------------------------
     - name: Run Bearer
       uses: bearer/bearer-action@v2
+      if: always()
       with:
         format: json
         output: bearer-report.json
-        exit-code: 0
 
     - name: Upload Bearer report to DefectDojo
       env:
@@ -72,11 +74,13 @@ jobs:
     # -------------------------
     - name: Run Semgrep
       uses: returntocorp/semgrep-action@v1
+      if: always()
       with:
         config: auto
         output: semgrep-report.json
 
     - name: Upload Semgrep reports to DefectDojo
+      if: always()
       env:
         DD_URL: ${{ secrets.DD_URL }}
         DD_API_KEY: ${{ secrets.DD_API_KEY }}
