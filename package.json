@@ -8,9 +8,10 @@
   },
   "license": "MIT",
   "author": "miniluz",
-  "type": "commonjs",
+  "type": "module",
   "main": "src/app.js",
   "scripts": {
+    "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

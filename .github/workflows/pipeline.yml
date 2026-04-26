@@ -71,20 +71,25 @@ jobs:
           -F "engagement=$DD_ENGAGEMENT_ID"
 
     # -------------------------
-    # SemGrep (IAST)
+    # Start application (required for ZAP)
     # -------------------------
-    - name: Run Semgrep
-      uses: returntocorp/semgrep-action@v1
+    - name: Start app
+      run: |
+        npm start &
+        sleep 2
+
+    # -------------------------
+    # OWASP ZAP (DAST)
+    # -------------------------
+    - name: Run OWASP ZAP Baseline Scan
+      uses: zaproxy/action-baseline@v0.10.0
       if: always()
       with:
-        config: auto
-        output: semgrep-report.json
+        target: 'http://localhost:3000'
+        format: 'xml'
+        cmd_options: '-a'
 
-    - name: TEST
-      if: always()
-      run: ls -R --ignore=node_modules
-
-    - name: Upload Semgrep reports to DefectDojo
+    - name: Upload ZAP report to DefectDojo
       if: always()
       env:
         DD_URL: ${{ secrets.DD_URL }}
@@ -93,7 +98,10 @@ jobs:
       run: |
         curl -X POST "$DD_URL/api/v2/import-scan/" \
           -H "Authorization: Token $DD_API_KEY" \
-          -F "scan_type=Semgrep JSON Report" \
-          -F "file=@semgrep-report.json" \
+          -F "scan_type=ZAP Scan" \
+          -F "file=@report_xml.xml" \
           -F "engagement=$DD_ENGAGEMENT_ID"
 
+    - name: TEST
+      if: always()
+      run: ls -R --ignore=node_modules
