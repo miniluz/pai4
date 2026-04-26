@@ -28,21 +28,21 @@ jobs:
     - name: Dependency Check
       uses: dependency-check/Dependency-Check_Action@main
       with:
-        project: "demo"
+        project: "PAI4"
         path: "."
-        format: "JSON"
+        format: "XML"
         out: "dependency-check-report"
 
     - name: Upload Dependency report to DefectDojo
       env:
         DD_URL: ${{ secrets.DD_URL }}
         DD_API_KEY: ${{ secrets.DD_API_KEY }}
-        DD_ENGAGEMENT_ID: ${{ secrets.DD_ENGAGEMENT_ID }}
+        DD_ENGAGEMENT_ID: ${{ vars.DD_ENGAGEMENT_ID }}
       run: |
         curl -X POST "$DD_URL/api/v2/import-scan/" \
           -H "Authorization: Token $DD_API_KEY" \
           -F "scan_type=Dependency Check Scan" \
-          -F "file=@dependency-check-report/dependency-check-report.json" \
+          -F "file=@reports/dependency-check-report.xml" \
           -F "engagement=$DD_ENGAGEMENT_ID"
 
     # -------------------------
@@ -58,7 +58,7 @@ jobs:
       env:
         DD_URL: ${{ secrets.DD_URL }}
         DD_API_KEY: ${{ secrets.DD_API_KEY }}
-        DD_ENGAGEMENT_ID: ${{ secrets.DD_ENGAGEMENT_ID }}
+        DD_ENGAGEMENT_ID: ${{ vars.DD_ENGAGEMENT_ID }}
       run: |
         curl -X POST "$DD_URL/api/v2/import-scan/" \
           -H "Authorization: Token $DD_API_KEY" \
@@ -73,17 +73,17 @@ jobs:
       uses: returntocorp/semgrep-action@v1
       with:
         config: auto
-        generateSarif: true
+        output: semgrep-report.json
 
     - name: Upload Semgrep reports to DefectDojo
       env:
         DD_URL: ${{ secrets.DD_URL }}
         DD_API_KEY: ${{ secrets.DD_API_KEY }}
-        DD_ENGAGEMENT_ID: ${{ secrets.DD_ENGAGEMENT_ID }}
+        DD_ENGAGEMENT_ID: ${{ vars.DD_ENGAGEMENT_ID }}
       run: |
         curl -X POST "$DD_URL/api/v2/import-scan/" \
           -H "Authorization: Token $DD_API_KEY" \
-          -F "scan_type=Semgrep SARIF Report" \
-          -F "file=@semgrep.sarif" \
+          -F "scan_type=Semgrep JSON Report" \
+          -F "file=@semgrep-report.json" \
           -F "engagement=$DD_ENGAGEMENT_ID"
 
