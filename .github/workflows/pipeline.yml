@@ -58,6 +58,7 @@ jobs:
         output: bearer-report.json
 
     - name: Upload Bearer report to DefectDojo
+      if: always()
       env:
         DD_URL: ${{ secrets.DD_URL }}
         DD_API_KEY: ${{ secrets.DD_API_KEY }}
@@ -78,6 +79,10 @@ jobs:
       with:
         config: auto
         output: semgrep-report.json
+
+    - name: TEST
+      if: always()
+      run: ls -R --ignore=node_modules
 
     - name: Upload Semgrep reports to DefectDojo
       if: always()
