@@ -32,6 +32,7 @@ jobs:
         path: "."
         format: "XML"
         out: "dependency-check-report"
+        exit-code: 0
 
     - name: Upload Dependency report to DefectDojo
       env:
