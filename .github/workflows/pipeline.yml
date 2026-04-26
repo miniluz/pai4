@@ -87,7 +87,7 @@ jobs:
       with:
         target: 'http://localhost:3000'
         format: 'xml'
-        cmd_options: '-a'
+        cmd_options: '-a -x report_xml.xml'
 
     - name: Upload ZAP report to DefectDojo
       if: always()
@@ -102,6 +102,6 @@ jobs:
           -F "file=@report_xml.xml" \
           -F "engagement=$DD_ENGAGEMENT_ID"
 
-    - name: TEST
+    - name: (DEBUG) List file structure
       if: always()
       run: ls -R --ignore=node_modules
