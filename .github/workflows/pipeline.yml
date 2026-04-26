@@ -75,6 +75,7 @@ jobs:
     # Start application (required for ZAP)
     # -------------------------
     - name: Start app
+      if: always()
       run: |
         npm start &
         sleep 2
@@ -83,11 +84,13 @@ jobs:
     # Wapiti (DAST)
     # -------------------------
     - name: Install Wapiti
+      if: always()
       run: |
         sudo apt-get update
         sudo apt-get install -y wapiti
 
     - name: Run Wapiti Scan
+      if: always()
       run: wapiti -u http://localhost:3000 -f xml -o wapiti-report.xml
 
     - name: Upload Wapiti report to DefectDojo
