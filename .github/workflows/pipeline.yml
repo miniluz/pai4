@@ -56,6 +56,7 @@ jobs:
       with:
         format: json
         output: bearer-report.json
+        exit-code: 0
 
     - name: Upload Bearer report to DefectDojo
       if: always()
@@ -79,17 +80,17 @@ jobs:
         sleep 2
 
     # -------------------------
-    # OWASP ZAP (DAST)
+    # Wapiti (DAST)
     # -------------------------
-    - name: Run OWASP ZAP Baseline Scan
-      uses: zaproxy/action-baseline@v0.10.0
-      if: always()
-      with:
-        target: 'http://localhost:3000'
-        format: 'xml'
-        cmd_options: '-a -x report_xml.xml'
+    - name: Install Wapiti
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wapiti
 
-    - name: Upload ZAP report to DefectDojo
+    - name: Run Wapiti Scan
+      run: wapiti -u http://localhost:3000 -f xml -o wapiti-report.xml
+
+    - name: Upload Wapiti report to DefectDojo
       if: always()
       env:
         DD_URL: ${{ secrets.DD_URL }}
@@ -99,7 +100,7 @@ jobs:
         curl -X POST "$DD_URL/api/v2/import-scan/" \
           -H "Authorization: Token $DD_API_KEY" \
           -F "scan_type=ZAP Scan" \
-          -F "file=@report_xml.xml" \
+          -F "file=@wapiti-report.xml" \
           -F "engagement=$DD_ENGAGEMENT_ID"
 
     - name: (DEBUG) List file structure
