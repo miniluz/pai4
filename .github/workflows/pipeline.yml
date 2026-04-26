@@ -32,7 +32,6 @@ jobs:
         path: "."
         format: "XML"
         out: "dependency-check-report"
-        exit-code: 0
 
     - name: Upload Dependency report to DefectDojo
       env:
@@ -54,6 +53,7 @@ jobs:
       with:
         format: json
         output: bearer-report.json
+        exit-code: 0
 
     - name: Upload Bearer report to DefectDojo
       env:
