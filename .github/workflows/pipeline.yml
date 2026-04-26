@@ -42,7 +42,7 @@ jobs:
         curl -X POST "$DD_URL/api/v2/import-scan/" \
           -H "Authorization: Token $DD_API_KEY" \
           -F "scan_type=Dependency Check Scan" \
-          -F "file=@reports/dependency-check-report.xml" \
+          -F "file=@dependency-check-report/dependency-check-report.xml" \
           -F "engagement=$DD_ENGAGEMENT_ID"
 
     # -------------------------
